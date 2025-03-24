@@ -1,0 +1,142 @@
+[
+  {
+    "step": "1",
+    "source": {
+      "name": "readObject",
+      "classname": "java.util.PriorityQueue",
+      "sub_signature": "void readObject(java.io.ObjectInputStream)"
+    },
+    "destination": {
+      "name": "heapify",
+      "classname": "java.util.PriorityQueue",
+      "sub_signature": "void heapify()"
+    },
+    "conditions": [
+      "this.size must be greater than or equal to 0",
+      "this.queue must be initialized before calling heapify()"
+    ],
+    "feasibility": "The call is feasible as long as the conditions are met. The readObject method initializes the queue and sets the size, which are prerequisites for heapify to function correctly.",
+    "confidence": "High"
+  },
+  {
+    "step": "2",
+    "source": {
+      "name": "heapify",
+      "classname": "java.util.PriorityQueue",
+      "sub_signature": "void heapify()"
+    },
+    "destination": {
+      "name": "siftDownUsingComparator",
+      "classname": "java.util.PriorityQueue",
+      "sub_signature": "void siftDownUsingComparator(int,java.lang.Object,java.lang.Object[],int,java.util.Comparator)"
+    },
+    "conditions": [
+      "The variable 'i' must be a valid index within the bounds of the 'queue' array.",
+      "The 'comparator' variable must not be null for 'siftDownUsingComparator' to be called.",
+      "The 'size' variable must be greater than 0 to ensure there are elements to sift down."
+    ],
+    "feasibility": "The call is feasible as long as the conditions are met. The 'heapify' method prepares the necessary parameters and ensures that 'comparator' is not null before calling 'siftDownUsingComparator'. However, if 'size' is 0, the loop will not execute, and 'siftDownUsingComparator' will not be called.",
+    "confidence": "High"
+  },
+  {
+    "step": "3",
+    "source": {
+      "name": "siftDownUsingComparator",
+      "classname": "java.util.PriorityQueue",
+      "sub_signature": "void siftDownUsingComparator(int,java.lang.Object,java.lang.Object[],int,java.util.Comparator)"
+    },
+    "destination": {
+      "name": "compare",
+      "classname": "java.util.Comparator",
+      "sub_signature": "int compare(java.lang.Object,java.lang.Object)"
+    },
+    "conditions": [
+      "The comparator must not be null.",
+      "The objects being compared (x and c) must not be null, or the comparator must handle null values appropriately.",
+      "The size of the queue must be greater than 0 for the while loop to execute."
+    ],
+    "feasibility": "The call is feasible as long as the conditions are met. The comparator must be properly initialized and capable of handling the objects being compared. If the queue is empty or the comparator is null, the call will not be valid.",
+    "confidence": "Medium"
+  },
+  {
+    "step": "4",
+    "source": {
+      "name": "compare",
+      "classname": "java.util.Comparator",
+      "sub_signature": "int compare(java.lang.Object,java.lang.Object)"
+    },
+    "destination": {
+      "name": "compare",
+      "classname": "org.apache.commons.collections.comparators.TransformingComparator",
+      "sub_signature": "int compare(java.lang.Object,java.lang.Object)"
+    },
+    "conditions": [
+      "The transformer in TransformingComparator must be initialized and not null.",
+      "The decorated comparator in TransformingComparator must be initialized and not null.",
+      "The objects passed to the compare method (obj1 and obj2) must be compatible with the transformer and the decorated comparator."
+    ],
+    "feasibility": "The call is feasible if the conditions are met. If the transformer or decorated comparator is null, or if the objects are incompatible, the call will fail.",
+    "confidence": "Medium"
+  },
+  {
+    "step": "5",
+    "source": {
+      "name": "compare",
+      "classname": "org.apache.commons.collections.comparators.TransformingComparator",
+      "sub_signature": "int compare(java.lang.Object,java.lang.Object)"
+    },
+    "destination": {
+      "name": "transform",
+      "classname": "org.apache.commons.collections.Transformer",
+      "sub_signature": "java.lang.Object transform(java.lang.Object)"
+    },
+    "conditions": [
+      "The 'transformer' variable must be initialized and not null.",
+      "The 'obj1' and 'obj2' parameters must be valid objects that can be transformed by the 'transformer'."
+    ],
+    "feasibility": "The call is feasible as long as the 'transformer' is properly initialized and the input objects are valid. If either of these conditions is not met, the call may fail or produce unexpected results.",
+    "confidence": "High"
+  },
+  {
+    "step": "6",
+    "source": {
+      "name": "transform",
+      "classname": "org.apache.commons.collections.Transformer",
+      "sub_signature": "java.lang.Object transform(java.lang.Object)"
+    },
+    "destination": {
+      "name": "transform",
+      "classname": "org.apache.commons.collections.functors.InvokerTransformer",
+      "sub_signature": "java.lang.Object transform(java.lang.Object)"
+    },
+    "conditions": [
+      "The input object must not be null.",
+      "The input object must have a method with the name specified by iMethodName.",
+      "The input object must have parameters that match the types specified by iParamTypes.",
+      "The method specified by iMethodName must be accessible (not private or protected) from the context of the InvokerTransformer."
+    ],
+    "feasibility": "The call is feasible if the input object meets the specified conditions. If any of the conditions are not met, the call will fail, either returning null or throwing a FunctorException.",
+    "confidence": "High"
+  },
+  {
+    "step": "7",
+    "source": {
+      "name": "transform",
+      "classname": "org.apache.commons.collections.functors.InvokerTransformer",
+      "sub_signature": "java.lang.Object transform(java.lang.Object)"
+    },
+    "destination": {
+      "name": "invoke",
+      "classname": "java.lang.reflect.Method",
+      "sub_signature": "java.lang.Object invoke(java.lang.Object,java.lang.Object[])"
+    },
+    "conditions": [
+      "Variable input must not be null.",
+      "The method named iMethodName must exist in the class of the input object.",
+      "The method iMethodName must be accessible (not private or protected if called from a different class).",
+      "The number and types of arguments in iArgs must match the parameters of the method iMethodName."
+    ],
+    "feasibility": "The call is feasible if all conditions are met. If input is null, the method will return null without invoking. If the method does not exist or is not accessible, a FunctorException will be thrown. If the arguments do not match, an IllegalArgumentException will be thrown during the invoke call.",
+    "confidence": "High"
+  }
+]

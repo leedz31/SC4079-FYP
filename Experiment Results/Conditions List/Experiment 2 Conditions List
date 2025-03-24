@@ -1,0 +1,178 @@
+[
+  {
+    "step": "1",
+    "source": {
+      "name": "readObject",
+      "classname": "None",
+      "sub_signature": "private void readObject(ObjectInputStream s) throws IOException, ClassNotFoundException"
+    },
+    "destination": {
+      "name": "put",
+      "classname": "java.util.HashMap",
+      "sub_signature": "java.lang.Object put(java.lang.Object,java.lang.Object)"
+    },
+    "conditions": [
+      "The variable 'size' must be greater than or equal to 0 to ensure the for loop executes.",
+      "The variable 'e' must be a valid object that can be used as a key in the HashMap.",
+      "The variable 'PRESENT' must be defined and valid to be used as the value in the put method."
+    ],
+    "feasibility": "The call is feasible as long as the conditions are met. The readObject method prepares the data and ensures that the size is valid before attempting to put entries into the HashMap. However, if 'size' is negative, the loop will not execute, and if 'e' is not a valid key, it may lead to unexpected behavior.",
+    "confidence": "Medium"
+  },
+  {
+    "step": "2",
+    "source": {
+      "name": "put",
+      "classname": "java.util.HashMap",
+      "sub_signature": "public V put(K key, V value)"
+    },
+    "destination": {
+      "name": "putVal",
+      "classname": "java.util.HashMap",
+      "sub_signature": "final V putVal(int hash, K key, V value, boolean onlyIfAbsent, boolean evict)"
+    },
+    "conditions": [
+      "The 'key' variable must not be null if the 'hash' calculated from it is to be used.",
+      "The 'value' variable can be null, but if 'onlyIfAbsent' is false, the old value must also be null for the update to occur.",
+      "The 'hash' must be calculated correctly from the 'key' using the 'hash' method."
+    ],
+    "feasibility": "The call is feasible as long as the 'key' and 'value' parameters are provided correctly. The method 'put' prepares the parameters for 'putVal' and handles the necessary conditions for calling it. However, if the 'key' is null, special handling is required in 'putVal'.",
+    "confidence": "High"
+  },
+  {
+    "step": "3",
+    "source": {
+      "name": "putVal",
+      "classname": "Unknown",
+      "sub_signature": "putVal(int hash, K key, V value, boolean onlyIfAbsent, boolean evict)"
+    },
+    "destination": {
+      "name": "equals",
+      "classname": "java.lang.Object",
+      "sub_signature": "boolean equals(java.lang.Object)"
+    },
+    "conditions": [
+      "Variable key must not be null or must be equal to the key of the existing node p for the equals method to be called."
+    ],
+    "feasibility": "The call to equals is feasible if the conditions are met. The equals method is called to compare the key of the existing node p with the provided key. If key is null, it will only proceed if the existing node's key is also null. If key is not null, it must be equal to the existing node's key for the call to be valid.",
+    "confidence": "High"
+  },
+  {
+    "step": "4",
+    "source": {
+      "name": "None",
+      "classname": "None",
+      "sub_signature": "None"
+    },
+    "destination": {
+      "name": "equals",
+      "classname": "sun.security.x509.CRLExtensions",
+      "sub_signature": "boolean equals(java.lang.Object)"
+    },
+    "conditions": [
+      "The object being compared must be an instance of CRLExtensions for the call to be valid."
+    ],
+    "feasibility": "The call is feasible if the object passed to the equals method is indeed an instance of CRLExtensions. However, since the caller method is not defined and does not provide context on the object being compared, it is uncertain if this condition will be met in practice.",
+    "confidence": "Medium"
+  },
+  {
+    "step": "5",
+    "source": {
+      "name": "equals",
+      "classname": "CRLExtensions",
+      "sub_signature": "public boolean equals(Object other)"
+    },
+    "destination": {
+      "name": "get",
+      "classname": "java.util.Map",
+      "sub_signature": "java.lang.Object get(java.lang.Object)"
+    },
+    "conditions": [
+      "The variable 'key' must be a valid key in 'this.map'.",
+      "The variable 'this.map' must not be null.",
+      "The variable 'other' must be an instance of CRLExtensions."
+    ],
+    "feasibility": "The call is feasible as long as the conditions are met. The 'key' variable is derived from either 'CertAttrSet' or 'Extension', and it must exist in 'this.map' for the 'get' method to be called successfully.",
+    "confidence": "High"
+  },
+  {
+    "step": "6",
+    "source": {
+      "name": "None",
+      "classname": "None",
+      "sub_signature": "None"
+    },
+    "destination": {
+      "name": "get",
+      "classname": "org.apache.commons.collections.map.LazyMap",
+      "sub_signature": "java.lang.Object get(java.lang.Object)"
+    },
+    "conditions": [
+      "Variable key must not be null to avoid NullPointerException.",
+      "The map must be initialized before calling get() to ensure it can check for keys."
+    ],
+    "feasibility": "The call is feasible as long as the conditions are met. The method get() can be called with a valid key, and the LazyMap must be properly initialized. If the map is not initialized or the key is null, it will lead to exceptions.",
+    "confidence": "High"
+  },
+  {
+    "step": "7",
+    "source": {
+      "name": "get",
+      "classname": "None",
+      "sub_signature": "public Object get(Object key)"
+    },
+    "destination": {
+      "name": "transform",
+      "classname": "org.apache.commons.collections.Transformer",
+      "sub_signature": "java.lang.Object transform(java.lang.Object)"
+    },
+    "conditions": [
+      "The map must not contain the key provided as an argument.",
+      "The factory object must be properly initialized and not null."
+    ],
+    "feasibility": "The call to transform is feasible if the conditions are met. The get method checks if the map contains the key; if not, it calls factory.transform(key). However, if the factory is null or not properly initialized, this will lead to a NullPointerException.",
+    "confidence": "Medium"
+  },
+  {
+    "step": "8",
+    "source": {
+      "name": "None",
+      "classname": "None",
+      "sub_signature": "None"
+    },
+    "destination": {
+      "name": "transform",
+      "classname": "org.apache.commons.collections.functors.InvokerTransformer",
+      "sub_signature": "java.lang.Object transform(java.lang.Object)"
+    },
+    "conditions": [
+      "The input variable must not be null.",
+      "The input variable must have a method with the name specified by iMethodName.",
+      "The input variable must have parameters that match the types specified by iParamTypes.",
+      "The method specified by iMethodName must be accessible (not private or protected) from the context of InvokerTransformer."
+    ],
+    "feasibility": "The call is feasible if the input object meets the specified conditions. If any of the conditions are not met, the call will fail, either returning null or throwing an exception.",
+    "confidence": "High"
+  },
+  {
+    "step": "9",
+    "source": {
+      "name": "transform",
+      "classname": "None",
+      "sub_signature": "public Object transform(Object input)"
+    },
+    "destination": {
+      "name": "invoke",
+      "classname": "java.lang.reflect.Method",
+      "sub_signature": "public Object invoke(Object obj, Object... args)"
+    },
+    "conditions": [
+      "Variable input must not be null.",
+      "Variable iMethodName must be a valid method name of the class of the input object.",
+      "Variable iParamTypes must match the parameter types of the method identified by iMethodName.",
+      "Variable iArgs must be compatible with the parameter types of the method identified by iMethodName."
+    ],
+    "feasibility": "The call is feasible if all conditions are met. If input is null, the method will return null without invoking. If the method name or parameter types do not match, a FunctorException will be thrown. Additionally, if the method cannot be accessed or throws an exception, it will also result in a FunctorException.",
+    "confidence": "High"
+  }
+]

@@ -1,0 +1,212 @@
+{
+    "chain_id": 5,
+    "gadget_chain": [
+        {
+            "step": 1,
+            "source": {
+                "NAME": "readObject",
+                "IS_SERIALIZABLE": true,
+                "SUB_SIGNATURE": "void readObject(java.io.ObjectInputStream)",
+                "IS_SINK": false,
+                "CLASSNAME": "java.util.HashSet",
+                "code_snippet": "private void readObject(ObjectInputStream s) throws IOException, ClassNotFoundException {\n s.readFields();\n int capacity = s.readInt();\n if (capacity < 0) {\n throw new InvalidObjectException(\"Illegal capacity: \" + capacity);\n } else {\n float loadFactor = s.readFloat();\n if (!(loadFactor <= 0.0F) && !Float.isNaN(loadFactor)) {\n loadFactor = Math.min(Math.max(0.25F, loadFactor), 4.0F);\n int size = s.readInt();\n if (size < 0) {\n throw new InvalidObjectException(\"Illegal size: \" + size);\n } else {\n capacity = (int)Math.min((float)size * Math.min(1.0F / loadFactor, 4.0F), 1.0737418E9F);\n SharedSecrets.getJavaObjectInputStreamAccess().checkArray(s, Map.Entry[].class, HashMap.tableSizeFor(capacity));\n this.map = (HashMap<E, Object>)(this instanceof LinkedHashSet ? new LinkedHashMap(capacity, loadFactor) : new HashMap(capacity, loadFactor));\n for(int i = 0; i < size; ++i) {\n E e = (E)s.readObject();\n this.map.put(e, PRESENT);\n}\n}\n} else {\n throw new InvalidObjectException(\"Illegal load factor: \" + loadFactor);\n }\n }\n }"
+            },
+            "relationship": {
+                "type": "CALL",
+                "invoker_type": "VirtualInvoke"
+            },
+            "destination": {
+                "name": "put",
+                "is_serializable": true,
+                "sub_signature": "java.lang.Object put(java.lang.Object,java.lang.Object)",
+                "is_sink": false,
+                "classname": "java.util.HashMap",
+                "code_snippet": "public V put(K key, V value) {\n return (V)this.putVal(hash(key), key, value, false, true);\n }"
+            }
+        },
+        {
+            "step": 2,
+            "source": {
+                "NAME": "put",
+                "IS_SERIALIZABLE": true,
+                "SUB_SIGNATURE": "java.lang.Object put(java.lang.Object,java.lang.Object)",
+                "IS_SINK": false,
+                "CLASSNAME": "java.util.HashMap",
+                "code_snippet": "public V put(K key, V value) {\n return (V)this.putVal(hash(key), key, value, false, true);\n }"
+            },
+            "relationship": {
+                "type": "CALL",
+                "invoker_type": "VirtualInvoke"
+            },
+            "destination": {
+                "name": "putVal",
+                "is_serializable": true,
+                "sub_signature": "java.lang.Object putVal(int,java.lang.Object,java.lang.Object,boolean,boolean)",
+                "is_sink": false,
+                "classname": "java.util.HashMap",
+                "code_snippet": "final V putVal(int hash, K key, V value, boolean onlyIfAbsent, boolean evict) {\n Node<K, V>[] tab;\n int n;\n if ((tab = this.table) == null || (n = tab.length) == 0) {\n n = (tab = this.resize()).length;\n }\n Node<K, V> p;\n int i;\n if ((p = tab[i = n - 1 & hash]) == null) {\n tab[i] = this.newNode(hash, key, value, (Node)null);\n } else {\n Node<K, V> e;\n K k;\n if (p.hash != hash || (k = p.key) != key && (key == null || !key.equals(k))) {\n if (p instanceof TreeNode) {\n e = (p).putTreeVal(this, tab, hash, key, value);\n } else {\n int binCount = 0;\n while(true) {\n if ((e = p.next) == null) {\n p.next = this.newNode(hash, key, value, (Node)null);\n if (binCount >= 7) {\n this.treeifyBin(tab, hash);\n }\n break;\n }\n if (e.hash == hash && ((k = e.key) == key || key != null && key.equals(k))) {\n break;\n }\n p = e;\n ++binCount;\n }\n }\n } else {\n e = p;\n }\n if (e != null) {\n V oldValue = e.value;\n if (!onlyIfAbsent || oldValue == null) {\n e.value = value;\n }\n this.afterNodeAccess(e);\n return oldValue;\n }\n }\n ++this.modCount;\n if (++this.size > this.threshold) {\n this.resize();\n }\n this.afterNodeInsertion(evict);\n return null;\n}"
+            }
+        },
+        {
+            "step": 3,
+            "source": {
+                "NAME": "putVal",
+                "IS_SERIALIZABLE": true,
+                "SUB_SIGNATURE": "java.lang.Object putVal(int,java.lang.Object,java.lang.Object,boolean,boolean)",
+                "IS_SINK": false,
+                "CLASSNAME": "java.util.HashMap",
+                "code_snippet": "final V putVal(int hash, K key, V value, boolean onlyIfAbsent, boolean evict) {\n Node<K, V>[] tab;\n int n;\n if ((tab = this.table) == null || (n = tab.length) == 0) {\n n = (tab = this.resize()).length;\n }\n Node<K, V> p;\n int i;\n if ((p = tab[i = n - 1 & hash]) == null) {\n tab[i] = this.newNode(hash, key, value, (Node)null);\n } else {\n Node<K, V> e;\n K k;\n if (p.hash != hash || (k = p.key) != key && (key == null || !key.equals(k))) {\n if (p instanceof TreeNode) {\n e = (p).putTreeVal(this, tab, hash, key, value);\n } else {\n int binCount = 0;\n while(true) {\n if ((e = p.next) == null) {\n p.next = this.newNode(hash, key, value, (Node)null);\n if (binCount >= 7) {\n this.treeifyBin(tab, hash);\n }\n break;\n }\n if (e.hash == hash && ((k = e.key) == key || key != null && key.equals(k))) {\n break;\n }\n p = e;\n ++binCount;\n }\n }\n } else {\n e = p;\n }\n if (e != null) {\n V oldValue = e.value;\n if (!onlyIfAbsent || oldValue == null) {\n e.value = value;\n }\n this.afterNodeAccess(e);\n return oldValue;\n }\n }\n ++this.modCount;\n if (++this.size > this.threshold) {\n this.resize();\n }\n this.afterNodeInsertion(evict);\n return null;\n}"
+            },
+            "relationship": {
+                "type": "CALL",
+                "invoker_type": "VirtualInvoke"
+            },
+            "destination": {
+                "name": "equals",
+                "is_serializable": false,
+                "sub_signature": "boolean equals(java.lang.Object)",
+                "is_sink": false,
+                "classname": "java.lang.Object",
+                "code_snippet": "public boolean equals(Object obj) {\n return this == obj;\n }"
+            }
+        },
+        {
+            "step": 4,
+            "source": {
+                "NAME": "equals",
+                "IS_SERIALIZABLE": false,
+                "SUB_SIGNATURE": "boolean equals(java.lang.Object)",
+                "IS_SINK": false,
+                "CLASSNAME": "java.lang.Object",
+                "code_snippet": "public boolean equals(Object obj) {\n return this == obj;\n }"
+            },
+            "relationship": {
+                "type": "ALIAS",
+                "invoker_type": null
+            },
+            "destination": {
+                "name": "equals",
+                "is_serializable": false,
+                "sub_signature": "boolean equals(java.lang.Object)",
+                "is_sink": false,
+                "classname": "sun.security.x509.CRLExtensions",
+                "code_snippet": "public boolean equals(Object other) {\n if (this == other) {\n return true;\n } else if (!(other instanceof CRLExtensions)) {\n return false;\n } else {\n Collection<Extension> otherC = ((CRLExtensions)other).getAllExtensions();\n Object[] objs = otherC.toArray();\n int len = objs.length;\n if (len != this.map.size()) {\n return false;\n } else {\n String key = null;\n for(int i = 0; i < len; ++i) {\n if (objs[i] instanceof CertAttrSet) {\n key = ((CertAttrSet)objs[i]).getName();\n }\n Extension otherExt = (Extension)objs[i];\n if (key == null) {\n key = otherExt.getExtensionId().toString();\n }\n Extension thisExt = (Extension)this.map.get(key);\n if (thisExt == null) {\n return false;\n }\n if (!thisExt.equals(otherExt)) {\n return false;\n }\n }\n return true;\n }\n }\n }"
+            }
+        },
+        {
+            "step": 5,
+            "source": {
+                "NAME": "equals",
+                "IS_SERIALIZABLE": false,
+                "SUB_SIGNATURE": "boolean equals(java.lang.Object)",
+                "IS_SINK": false,
+                "CLASSNAME": "sun.security.x509.CRLExtensions",
+                "code_snippet": "public boolean equals(Object other) {\n if (this == other) {\n return true;\n } else if (!(other instanceof CRLExtensions)) {\n return false;\n } else {\n Collection<Extension> otherC = ((CRLExtensions)other).getAllExtensions();\n Object[] objs = otherC.toArray();\n int len = objs.length;\n if (len != this.map.size()) {\n return false;\n } else {\n String key = null;\n for(int i = 0; i < len; ++i) {\n if (objs[i] instanceof CertAttrSet) {\n key = ((CertAttrSet)objs[i]).getName();\n }\n Extension otherExt = (Extension)objs[i];\n if (key == null) {\n key = otherExt.getExtensionId().toString();\n }\n Extension thisExt = (Extension)this.map.get(key);\n if (thisExt == null) {\n return false;\n }\n if (!thisExt.equals(otherExt)) {\n return false;\n }\n }\n return true;\n }\n }\n }"
+            },
+            "relationship": {
+                "type": "CALL",
+                "invoker_type": "InterfaceInvoke"
+            },
+            "destination": {
+                "name": "get",
+                "is_serializable": false,
+                "sub_signature": "java.lang.Object get(java.lang.Object)",
+                "is_sink": false,
+                "classname": "java.util.Map",
+                "code_snippet": "V get(Object var1); // implemented by org.apache.commons.collections.map.LazyMap"
+            }
+        },
+        {
+            "step": 6,
+            "source": {
+                "NAME": "get",
+                "IS_SERIALIZABLE": false,
+                "SUB_SIGNATURE": "java.lang.Object get(java.lang.Object)",
+                "IS_SINK": false,
+                "CLASSNAME": "java.util.Map",
+                "code_snippet": "V get(Object var1); // implemented by org.apache.commons.collections.map.LazyMap"
+            },
+            "relationship": {
+                "type": "ALIAS",
+                "invoker_type": null
+            },
+            "destination": {
+                "name": "get",
+                "is_serializable": true,
+                "sub_signature": "java.lang.Object get(java.lang.Object)",
+                "is_sink": false,
+                "classname": "org.apache.commons.collections.map.LazyMap",
+                "code_snippet": "public Object get(Object key) {\n if (map.containsKey(key) == false) {\n Object value = factory.transform(key);\n map.put(key, value);\n return value;\n }\n return map.get(key);\n }"
+            }
+        },
+        {
+            "step": 7,
+            "source": {
+                "NAME": "get",
+                "IS_SERIALIZABLE": true,
+                "SUB_SIGNATURE": "java.lang.Object get(java.lang.Object)",
+                "IS_SINK": false,
+                "CLASSNAME": "org.apache.commons.collections.map.LazyMap",
+                "code_snippet": "public Object get(Object key) {\n if (map.containsKey(key) == false) {\n Object value = factory.transform(key);\n map.put(key, value);\n return value;\n }\n return map.get(key);\n }"
+            },
+            "relationship": {
+                "type": "CALL",
+                "invoker_type": "InterfaceInvoke"
+            },
+            "destination": {
+                "name": "transform",
+                "is_serializable": false,
+                "sub_signature": "java.lang.Object transform(java.lang.Object)",
+                "is_sink": false,
+                "classname": "org.apache.commons.collections.Transformer",
+                "code_snippet": "public Object transform(Object input); // implemented by org.apache.commons.collections.functors.InvokerTransformer.transform"
+            }
+        },
+        {
+            "step": 8,
+            "source": {
+                "NAME": "transform",
+                "IS_SERIALIZABLE": false,
+                "SUB_SIGNATURE": "java.lang.Object transform(java.lang.Object)",
+                "IS_SINK": false,
+                "CLASSNAME": "org.apache.commons.collections.Transformer",
+                "code_snippet": "public Object transform(Object input); // implemented by org.apache.commons.collections.functors.InvokerTransformer.transform"
+            },
+            "relationship": {
+                "type": "ALIAS",
+                "invoker_type": null
+            },
+            "destination": {
+                "name": "transform",
+                "is_serializable": true,
+                "sub_signature": "java.lang.Object transform(java.lang.Object)",
+                "is_sink": false,
+                "classname": "org.apache.commons.collections.functors.InvokerTransformer",
+                "code_snippet": "public Object transform(Object input) {\n if (input == null) {\n return null;\n }\n try {\n Class cls = input.getClass();\n Method method = cls.getMethod(iMethodName, iParamTypes);\n return method.invoke(input, iArgs);\n } catch (NoSuchMethodException ex) {\n throw new FunctorException(\"InvokerTransformer: The method '\" + iMethodName + \"' on '\" + input.getClass() + \"' does not exist\");\n } catch (IllegalAccessException ex) {\n throw new FunctorException(\"InvokerTransformer: The method '\" + iMethodName + \"' on '\" + input.getClass() + \"' cannot be accessed\");\n } catch (InvocationTargetException ex) {\n throw new FunctorException(\"InvokerTransformer: The method '\" + iMethodName + \"' on '\" + input.getClass() + \"' threw an exception\", ex);\n }\n}"
+            }
+        },
+        {
+            "step": 9,
+            "source": {
+                "NAME": "transform",
+                "IS_SERIALIZABLE": true,
+                "SUB_SIGNATURE": "java.lang.Object transform(java.lang.Object)",
+                "IS_SINK": false,
+                "CLASSNAME": "org.apache.commons.collections.functors.InvokerTransformer",
+                "code_snippet": "public Object transform(Object input) {\n if (input == null) {\n return null;\n }\n try {\n Class cls = input.getClass();\n Method method = cls.getMethod(iMethodName, iParamTypes);\n return method.invoke(input, iArgs);\n } catch (NoSuchMethodException ex) {\n throw new FunctorException(\"InvokerTransformer: The method '\" + iMethodName + \"' on '\" + input.getClass() + \"' does not exist\");\n } catch (IllegalAccessException ex) {\n throw new FunctorException(\"InvokerTransformer: The method '\" + iMethodName + \"' on '\" + input.getClass() + \"' cannot be accessed\");\n } catch (InvocationTargetException ex) {\n throw new FunctorException(\"InvokerTransformer: The method '\" + iMethodName + \"' on '\" + input.getClass() + \"' threw an exception\", ex);\n }\n}"
+            },
+            "relationship": {
+                "type": "CALL",
+                "invoker_type": "VirtualInvoke"
+            },
+            "destination": {
+                "name": "invoke",
+                "is_serializable": false,
+                "sub_signature": "java.lang.Object invoke(java.lang.Object,java.lang.Object[])",
+                "is_sink": true,
+                "classname": "java.lang.reflect.Method",
+                "code_snippet": "public Object invoke(Object obj, Object... args) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {\n if (!this.override) {\n Class<?> caller = Reflection.getCallerClass();\n this.checkAccess(caller, this.clazz, Modifier.isStatic(this.modifiers) ? null : obj.getClass(), this.modifiers);\n }\n MethodAccessor ma = this.methodAccessor;\n if (ma == null) {\n ma = this.acquireMethodAccessor();\n }\n return ma.invoke(obj, args);\n }"
+            }
+        }
+    ]
+}

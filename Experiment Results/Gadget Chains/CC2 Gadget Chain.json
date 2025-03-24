@@ -1,0 +1,166 @@
+{
+    "chain_id": 1,
+    "gadget_chain": [
+        {
+            "step": 1,
+            "source": {
+                "name": "readObject",
+                "is_serializable": true,
+                "sub_signature": "void readObject(java.io.ObjectInputStream)",
+                "is_sink": false,
+                "classname": "java.util.PriorityQueue",
+                "code_snippet": "private void readObject(ObjectInputStream s) throws IOException, ClassNotFoundException {\n s.defaultReadObject();\n s.readInt();\n SharedSecrets.getJavaObjectInputStreamAccess().checkArray(s, Object[].class, this.size);\n Object[] es = this.queue = new Object[Math.max(this.size, 1)];\n int i = 0;\n for(int n = this.size; i < n; ++i) {\n es[i] = s.readObject();\n }\n this.heapify();\n}"
+            },
+            "relationship": {
+                "type": "CALL",
+                "invoker_type": "VirtualInvoke"
+            },
+            "destination": {
+                "name": "heapify",
+                "is_serializable": true,
+                "sub_signature": "void heapify()",
+                "is_sink": false,
+                "classname": "java.util.PriorityQueue",
+                "code_snippet": "private void heapify() {\n Object[] es = this.queue;\n int n = this.size;\n int i = (n >>> 1) - 1;\n Comparator<? super E> cmp;\n if ((cmp = this.comparator) == null) {\n while(i >= 0) {\n siftDownComparable(i, es[i], es, n);\n --i;\n }\n } else {\n while(i >= 0) {\n siftDownUsingComparator(i, es[i], es, n, cmp);\n --i;\n }\n }\n}"
+            }
+        },
+        {
+            "step": 2,
+            "source": {
+                "name": "heapify",
+                "is_serializable": true,
+                "sub_signature": "void heapify()",
+                "is_sink": false,
+                "classname": "java.util.PriorityQueue",
+                "code_snippet": "private void heapify() {\n Object[] es = this.queue;\n int n = this.size;\n int i = (n >>> 1) - 1;\n Comparator<? super E> cmp;\n if ((cmp = this.comparator) == null) {\n while(i >= 0) {\n siftDownComparable(i, es[i], es, n);\n --i;\n }\n } else {\n while(i >= 0) {\n siftDownUsingComparator(i, es[i], es, n, cmp);\n --i;\n }\n }\n}"
+            },
+            "relationship": {
+                "type": "CALL",
+                "invoker_type": "StaticInvoke"
+            },
+            "destination": {
+                "name": "siftDownUsingComparator",
+                "is_serializable": true,
+                "sub_signature": "void siftDownUsingComparator(int,java.lang.Object,java.lang.Object[],int,java.util.Comparator)",
+                "is_sink": false,
+                "classname": "java.util.PriorityQueue",
+                "code_snippet": "private void siftDownUsingComparator(int k, E x) {\n int half = size >>> 1;\n while (k < half) {\n int child = (k << 1) + 1;\n Object c = queue[child];\n int right = child + 1;\n if (right < size &&\n comparator.compare((E) c, (E) queue[right]) > 0)\n c = queue[child = right];\n if (comparator.compare(x, (E) c) <= 0)\n break;\n queue[k] = c;\n k = child;\n }\n queue[k] = x;\n}"
+            }
+        },
+        {
+            "step": 3,
+            "source": {
+                "name": "siftDownUsingComparator",
+                "is_serializable": true,
+                "sub_signature": "void siftDownUsingComparator(int,java.lang.Object,java.lang.Object[],int,java.util.Comparator)",
+                "is_sink": false,
+                "classname": "java.util.PriorityQueue",
+                "code_snippet": "private void siftDownUsingComparator(int k, E x) {\n int half = size >>> 1;\n while (k < half) {\n int child = (k << 1) + 1;\n Object c = queue[child];\n int right = child + 1;\n if (right < size &&\n comparator.compare((E) c, (E) queue[right]) > 0)\n c = queue[child = right];\n if (comparator.compare(x, (E) c) <= 0)\n break;\n queue[k] = c;\n k = child;\n }\n queue[k] = x;\n}"
+            },
+            "relationship": {
+                "type": "CALL",
+                "invoker_type": "InterfaceInvoke"
+            },
+            "destination": {
+                "name": "compare",
+                "is_serializable": false,
+                "sub_signature": "int compare(java.lang.Object,java.lang.Object)",
+                "is_sink": false,
+                "classname": "java.util.Comparator",
+                "code_snippet": "int compare(T var1, T var2); \n #implemented by org.apache.commons.collections.comparators.TransformingComparator"
+            }
+        },
+        {
+            "step": 4,
+            "source": {
+                "name": "compare",
+                "is_serializable": false,
+                "sub_signature": "int compare(java.lang.Object,java.lang.Object)",
+                "is_sink": false,
+                "classname": "java.util.Comparator",
+                "code_snippet": "int compare(T var1, T var2); \n #implemented by org.apache.commons.collections.comparators.TransformingComparator"
+            },
+            "relationship": {
+                "type": "ALIAS",
+                "invoker_type": null
+            },
+            "destination": {
+                "name": "compare",
+                "is_serializable": false,
+                "sub_signature": "int compare(java.lang.Object,java.lang.Object)",
+                "is_sink": false,
+                "classname": "org.apache.commons.collections.comparators.TransformingComparator",
+                "code_snippet": "public int compare(Object obj1, Object obj2) {\n Object value1 = this.transformer.transform(obj1);\n Object value2 = this.transformer.transform(obj2);\n return this.decorated.compare(value1, value2);\n }"
+            }
+        },
+        {
+            "step": 5,
+            "source": {
+                "name": "compare",
+                "is_serializable": false,
+                "sub_signature": "int compare(java.lang.Object,java.lang.Object)",
+                "is_sink": false,
+                "classname": "org.apache.commons.collections.comparators.TransformingComparator",
+                "code_snippet": "public int compare(Object obj1, Object obj2) {\n Object value1 = this.transformer.transform(obj1);\n Object value2 = this.transformer.transform(obj2);\n return this.decorated.compare(value1, value2);\n }"
+            },
+            "relationship": {
+                "type": "CALL",
+                "invoker_type": "InterfaceInvoke"
+            },
+            "destination": {
+                "name": "transform",
+                "is_serializable": false,
+                "sub_signature": "java.lang.Object transform(java.lang.Object)",
+                "is_sink": false,
+                "classname": "org.apache.commons.collections.Transformer",
+                "code_snippet": "public Object transform(Object input);\n # Implemented by org.apache.commons.collections.functors.InvokerTransformer"
+            }
+        },
+        {
+            "step": 6,
+            "source": {
+                "name": "transform",
+                "is_serializable": false,
+                "sub_signature": "java.lang.Object transform(java.lang.Object)",
+                "is_sink": false,
+                "classname": "org.apache.commons.collections.Transformer",
+                "code_snippet": "public Object transform(Object input);\n # Implemented by org.apache.commons.collections.functors.InvokerTransformer"
+            },
+            "relationship": {
+                "type": "ALIAS",
+                "invoker_type": null
+            },
+            "destination": {
+                "name": "transform",
+                "is_serializable": true,
+                "sub_signature": "java.lang.Object transform(java.lang.Object)",
+                "is_sink": false,
+                "classname": "org.apache.commons.collections.functors.InvokerTransformer",
+                "code_snippet": "public Object transform(Object input) {\n if (input == null) {\n return null;\n }\n try {\n Class cls = input.getClass();\n Method method = cls.getMethod(iMethodName, iParamTypes);\n return method.invoke(input, iArgs);\n } catch (NoSuchMethodException ex) {\n throw new FunctorException(\"InvokerTransformer: The method '\" + iMethodName + \"' on '\" + input.getClass() + \"' does not exist\");\n } catch (IllegalAccessException ex) {\n throw new FunctorException(\"InvokerTransformer: The method '\" + iMethodName + \"' on '\" + input.getClass() + \"' cannot be accessed\");\n } catch (InvocationTargetException ex) {\n throw new FunctorException(\"InvokerTransformer: The method '\" + iMethodName + \"' on '\" + input.getClass() + \"' threw an exception\", ex);\n }\n}"
+            }
+        },
+        {
+            "step": 7,
+            "source": {
+                "name": "transform",
+                "is_serializable": true,
+                "sub_signature": "java.lang.Object transform(java.lang.Object)",
+                "is_sink": false,
+                "classname": "org.apache.commons.collections.functors.InvokerTransformer",
+                "code_snippet": "public Object transform(Object input) {\n if (input == null) {\n return null;\n }\n try {\n Class cls = input.getClass();\n Method method = cls.getMethod(iMethodName, iParamTypes);\n return method.invoke(input, iArgs);\n } catch (NoSuchMethodException ex) {\n throw new FunctorException(\"InvokerTransformer: The method '\" + iMethodName + \"' on '\" + input.getClass() + \"' does not exist\");\n } catch (IllegalAccessException ex) {\n throw new FunctorException(\"InvokerTransformer: The method '\" + iMethodName + \"' on '\" + input.getClass() + \"' cannot be accessed\");\n } catch (InvocationTargetException ex) {\n throw new FunctorException(\"InvokerTransformer: The method '\" + iMethodName + \"' on '\" + input.getClass() + \"' threw an exception\", ex);\n }\n}"
+            },
+            "relationship": {
+                "type": "CALL",
+                "invoker_type": "VirtualInvoke"
+            },
+            "destination": {
+                "name": "invoke",
+                "is_serializable": false,
+                "sub_signature": "java.lang.Object invoke(java.lang.Object,java.lang.Object[])",
+                "is_sink": true,
+                "classname": "java.lang.reflect.Method",
+                "code_snippet": "public Object invoke(Object obj, Object... args) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {\n if (!this.override) {\n Class<?> caller = Reflection.getCallerClass();\n this.checkAccess(caller, this.clazz, Modifier.isStatic(this.modifiers) ? null : obj.getClass(), this.modifiers);\n }\n MethodAccessor ma = this.methodAccessor;\n if (ma == null) {\n ma = this.acquireMethodAccessor();\n }\n return ma.invoke(obj, args);\n }"
+            }
+        }
+    ]
+}
