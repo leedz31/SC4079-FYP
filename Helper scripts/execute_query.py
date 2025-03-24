@@ -25,44 +25,7 @@ def get_next_available_filename():
 
 def discover_gadget_chains(tx, srcname, limit):
     result = tx.run("""
-        MATCH (source:Method {NAME:$srcname}) 
-        WHERE source.CLASSNAME IN [
-            "java.io.ObjectInputStream",
-            "org.apache.commons.collections.Map.LazyMap",
-            "javax.management.BadAttributeValueExpException",
-            "java.util.PriorityQueue",
-            "java.util.HashSet", "java.lang.annotation.AnnotationInvocationHandler"]
-                    
-        MATCH (sink:Method)
-        WHERE sink.IS_SINK = true 
-        AND sink.CLASSNAME IN [
-            "java.lang.reflect.Method",
-            "java.lang.ProcessBuilder",
-            "java.lang.Runtime",
-            "java.io.File",
-            "java.lang.ClassLoader",
-            "java.net.URLClassLoader",
-            "javax.naming.InitialContext"
-        ]
-        CALL tabby.algo.findPath(source, "CALL>|ALIAS>", sink, 8, false) 
-        YIELD path
-        WITH path
-        WHERE none(n in nodes(path) WHERE 
-                n.CLASSNAME in [
-                    "java.io.ObjectInputStream",
-                    "org.apache.commons.beanutils.BeanMap",
-                "org.apache.commons.collections4.functors.PrototypeFactory$PrototypeCloneFactory"])
-        AND 
-            any(n IN nodes(path) WHERE n.CLASSNAME IN [
-                "org.apache.commons.collections.functors.InvokerTransformer",
-                "org.apache.commons.collections.functors.ChainedTransformer",
-                "org.apache.commons.collections.map.LazyMap",
-                "org.apache.commons.collections.functors.InstantiateFactory",
-                "org.apache.commons.collections.TransformerChain",
-            "java.lang.annotation.AnnotationInvocationHandler",
-            "org.apache.commons.collections.keyvalue.TiedMapEntry"
-            ])
-        RETURN path LIMIT $limit
+        query to be executed
     """, srcname=srcname, limit=limit)
 
     gadget_chains = []
